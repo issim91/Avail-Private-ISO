@@ -2,7 +2,7 @@ pragma solidity ^0.4.23;
 
 import "../token/AvailComToken.sol";
 import "../common/SafeMath.sol";
-import "../common/Ownable.sol";
+import "../common/Whitelist.sol";
 
 
 /**
@@ -17,7 +17,7 @@ import "../common/Ownable.sol";
  * the methods to add functionality. Consider using 'super' where appropriate to concatenate
  * behavior.
  */
-contract Crowdsale is Ownable {
+contract Crowdsale is Ownable, Whitelist {
   using SafeMath for uint256;
 
   // The token being sold
@@ -93,7 +93,10 @@ contract Crowdsale is Ownable {
    */
   function () saleIsOn isUnderHardCap external payable {
     require(!fifishISO);
-    require(msg.value >= etherLimit);
+
+    if (!hasRole(msg.sender, ROLE_WHITELISTED)) {
+      require(msg.value >= etherLimit);
+    }
 
     buyTokens(msg.sender);
   }
