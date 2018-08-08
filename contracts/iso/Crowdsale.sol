@@ -94,7 +94,7 @@ contract Crowdsale is Ownable, Whitelist {
   function () saleIsOn isUnderHardCap external payable {
     require(!fifishISO);
 
-    if (!hasRole(msg.sender, ROLE_WHITELISTED)) {
+    if (!whitelist(msg.sender)) {
       require(msg.value >= etherLimit);
     }
 
