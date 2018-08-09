@@ -23,8 +23,8 @@ contract Crowdsale is Ownable, Whitelist {
   // The token being sold
   AvailComToken public token;
 
-  // Variable for tracking whether ISO is complete
-  bool public fifishISO = false;
+  // Variable for tracking whether ICO is complete
+  bool public fifishICO = false;
 
   // Address where funds are collected
   address public wallet;
@@ -48,7 +48,7 @@ contract Crowdsale is Ownable, Whitelist {
   // Amount of wei raised
   uint256 public weiRaised;
 
-  // The minimum purchase amount of tokens. Can be changed during ISO
+  // The minimum purchase amount of tokens. Can be changed during ICO
   uint256 public etherLimit = 1 ether;
 
   /**
@@ -61,7 +61,7 @@ contract Crowdsale is Ownable, Whitelist {
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
     // Time check modifier
-    modifier saleIsOn() {
+    modifier saleICOn() {
     	require(now > start && now < start + period * 1 days);
     	_;
     }
@@ -91,8 +91,8 @@ contract Crowdsale is Ownable, Whitelist {
   /**
    * @dev fallback function ***DO NOT OVERRIDE***
    */
-  function () saleIsOn isUnderHardCap external payable {
-    require(!fifishISO);
+  function () saleICOn isUnderHardCap external payable {
+    require(!fifishICO);
 
     if (!whitelist(msg.sender)) {
       require(msg.value >= etherLimit);
@@ -151,12 +151,12 @@ contract Crowdsale is Ownable, Whitelist {
     wallet.transfer(msg.value);
   }
 
-  // ISO completion function. 
-  // At the end of ISO all unallocated tokens are returned to the address of the creator of the contract
+  // ICO completion function. 
+  // At the end of ICO all unallocated tokens are returned to the address of the creator of the contract
   function finishCrowdsale() public onlyOwner {
     uint _value = token.balanceOf(this);
     token.transfer(wallet, _value);
-    fifishISO = true;
+    fifishICO = true;
   }
 
   // The function of changing the minimum purchase amount of tokens.
@@ -164,4 +164,5 @@ contract Crowdsale is Ownable, Whitelist {
     etherLimit = _value;
     etherLimit = etherLimit * 1 ether;
   }
+
 }
